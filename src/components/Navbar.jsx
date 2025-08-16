@@ -1,15 +1,20 @@
 import React from "react";
 import { FiGrid, FiList, FiRefreshCcw, FiLogOut } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
+import { userinfo } from "../slices/UserSlice";
 
 const Navbar = () => {
   const userData = useSelector((state) => state.first.value);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   console.log(userData);
   const hadleLogout = () => {
     navigate("/login");
-    localStorage.setItem("userinfo", JSON.stringify(null));
+    //   localStorage.setItem("userinfo", JSON.stringify(null));
+    dispatch(userinfo(null));
+    // eslint-disable-next-line no-undef
+    LocalStorage.removeItem("userinfo");
   };
   return (
     <navbar className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">

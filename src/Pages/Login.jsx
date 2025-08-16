@@ -5,6 +5,8 @@ import { Bounce, toast } from "react-toastify";
 import { BeatLoader, ClockLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { userinfo } from "../slices/UserSlice";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -25,6 +27,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,6 +55,8 @@ const Login = () => {
         // Signed up
         const user = userCredential.user;
         console.log(user);
+        dispatch(userinfo(user));
+        localStorage.setItem("userinfo", JSON.stringify(user));
         navigate("/");
 
         // if (user.emailVerified == false) {

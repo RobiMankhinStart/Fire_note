@@ -10,11 +10,10 @@ const Navbar = () => {
   const dispatch = useDispatch();
   console.log(userData);
   const hadleLogout = () => {
-    navigate("/login");
     //   localStorage.setItem("userinfo", JSON.stringify(null));
     dispatch(userinfo(null));
-    // eslint-disable-next-line no-undef
-    LocalStorage.removeItem("userinfo");
+    localStorage.removeItem("userinfo");
+    navigate("/login");
   };
   return (
     <navbar className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">

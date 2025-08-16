@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@utility container {
+  margin-inline: auto;
+}
+.mainDiv {
+  background: linear-gradient(to right, #83a4d4, #b6fbff);
+}
+.header {
+  background: linear-gradient(to right, #ff4e50, #f9d423);
+}

@@ -8,10 +8,10 @@ import {
 } from "firebase/auth";
 import { Bounce, toast } from "react-toastify";
 import { BeatLoader, ClockLoader } from "react-spinners";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 const Registration = () => {
   const auth = getAuth();
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -90,6 +90,17 @@ const Registration = () => {
                 transition: Bounce,
               });
               setLoading(false);
+
+              // .............resetting form
+              setFormData((prev) => ({
+                ...prev,
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                errors: "",
+              }));
+              navigate("/login");
             });
           })
           .catch((error) => {
@@ -130,14 +141,6 @@ const Registration = () => {
         }
         // ..
       });
-    setFormData((prev) => ({
-      ...prev,
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      errors: "",
-    }));
   };
 
   const togglePasswordVisibility = () => {

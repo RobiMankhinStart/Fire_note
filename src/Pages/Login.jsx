@@ -57,22 +57,22 @@ const Login = () => {
         console.log(user);
         dispatch(userinfo(user));
         localStorage.setItem("userinfo", JSON.stringify(user));
-        navigate("/");
+        // navigate("/");
 
-        // if (user.emailVerified == false) {
-        //   toast.warn("please verify your email", {
-        //     position: "top-right",
-        //     autoClose: 5000,
-        //     hideProgressBar: false,
-        //     closeOnClick: false,
-        //     pauseOnHover: true,
-        //     draggable: true,
-        //     theme: "light",
-        //     transition: Bounce,
-        //   });
-        // } else {
-        //   navigate("/");
-        // }
+        if (user.emailVerified == false) {
+          toast.warn("please verify your email", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "light",
+            transition: Bounce,
+          });
+        } else {
+          navigate("/");
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -92,14 +92,6 @@ const Login = () => {
         });
         // ..
       });
-    setFormData((prev) => ({
-      ...prev,
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      errors: "",
-    }));
   };
 
   const togglePasswordVisibility = () => {

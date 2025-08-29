@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 const LayoutOne = () => {
   const userData = useSelector((state) => state.first.value);
   const navigate = useNavigate();
+  // console.log(userData);
   useEffect(() => {
     if (userData === null) {
       navigate("/login");

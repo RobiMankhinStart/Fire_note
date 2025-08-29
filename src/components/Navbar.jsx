@@ -8,7 +8,7 @@ const Navbar = () => {
   const userData = useSelector((state) => state.first.value);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(userData);
+  // console.log(userData);
   const hadleLogout = () => {
     //   localStorage.setItem("userinfo", JSON.stringify(null));
     dispatch(userinfo(null));
@@ -16,8 +16,16 @@ const Navbar = () => {
     navigate("/login");
   };
   return (
-    <navbar className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">
+    <navbar className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
       <h2 className="text-xl font-medium text-gray-800">My Notes</h2>
+      <div>
+        <input
+          type="text"
+          placeholder="search......"
+          className=" p-2 rounded-lg w-[300px] bg-cyan-100 shadow-lg
+        "
+        />
+      </div>
       <div className="flex items-center space-x-4">
         <div className="size-8 bg-red-600 rounded-full">
           <img
@@ -28,7 +36,7 @@ const Navbar = () => {
             alt="user"
           />
         </div>
-        <h3 className="font-semibold">{userData.displayName}</h3>
+        <h3 className="font-semibold">{userData?.displayName}</h3>
         <div onClick={hadleLogout}>
           <FiLogOut className="text-[20px] cursor-pointer" />
         </div>

@@ -17,15 +17,10 @@ import {
   remove,
   set,
 } from "firebase/database";
-
-const NoteCard = ({ title, content, color = "bg-white" }) => (
-  <div
-    className={`${color} rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer`}
-  >
-    <h3 className="font-medium text-gray-800">{title}</h3>
-    <p className="text-gray-600 mt-2 text-sm">{content}</p>
-  </div>
-);
+import { IoIosColorPalette } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { CiCircleRemove } from "react-icons/ci";
+import NoteCard from "../components/NoteCard";
 
 const SidebarItem = ({ icon, label, active = false }) => (
   <div
@@ -40,59 +35,55 @@ const SidebarItem = ({ icon, label, active = false }) => (
 
 const Home = () => {
   const db = getDatabase();
-  const [colours, setColours] = useState("bg-cyan-100");
+  const [colours, setColours] = useState("#ffffff");
+  console.log(colours);
+  const [title, setTitle] = useState("");
+  const [textArea, setTextArea] = useState("");
+  // const [inputcolour, setInputColour] = useState("white");
+  // console.log(inputcolour);
   const changeColor = (col) => {
     setColours(col);
   };
-  const notes = [
-    {
-      id: 1,
-      title: "Welcome to Notes App",
-      content: "Start creating your first note by clicking the + button",
-      color: "bg-yellow-50",
-    },
-    {
-      id: 2,
-      title: "Shopping List",
-      content: "Milk, Eggs, Bread, Fruits",
-      color: "bg-blue-50",
-    },
-    {
-      id: 3,
-      title: "Meeting Notes",
-      content: "Discuss project timeline with team",
-      color: "bg-green-50",
-    },
-    {
-      id: 4,
-      title: "Ideas",
-      content: "Build a new feature for the app",
-      color: "bg-pink-50",
-    },
-    {
-      id: 5,
-      title: "Books to Read",
-      content: "Atomic Habits, Deep Work, The Psychology of Money",
-      color: "bg-purple-50",
-    },
-  ];
+
+  const userDetails = useSelector((state) => state.first.value);
+  // console.log(userDetails.uid);
 
   const handleCreate = () => {
-    set(push(ref(db, "users/")), {
-      username: "Robi",
-      roll: 1,
+    set(push(ref(db, "tasks/")), {
+      noteTitle: title,
+      notedescription: textArea,
+      noteColour: colours,
+      noteUser: userDetails.uid,
     });
+    console.log("note added");
   };
 
-  const handleRemove = () => {
-    remove(ref(db, "users/"));
+  const handleDel = (user) => {
+    set(push(ref(db, "removedNotes/")), {
+      title: user.notes.noteTitle,
+      content: user.notes.notedescription,
+      color: user.notes.noteColour,
+    });
+    // ------------Remove
+    remove(ref(db, "tasks/" + user.key));
   };
+
+  const [allNotes, setAllNotes] = useState([]);
+  console.log("allNotes : ", allNotes);
   useEffect(() => {
+    console.log("User UID in effect:", userDetails?.uid);
     // const starCountRef = ref(db, "posts/");
-    onValue(ref(db, "users/"), (snapshot) => {
-      const data = snapshot.val();
-      // updateStarCount(postElement, data);
-      console.log(snapshot.val());
+    onValue(ref(db, "tasks/"), (snapshot) => {
+      let myArr = [];
+      snapshot.forEach((item) => {
+        if (item.val().noteUser == userDetails.uid) {
+          myArr.push({ key: item.key, notes: item.val() });
+        }
+      });
+
+      console.log("Snapshot:", snapshot.val());
+
+      setAllNotes(myArr);
     });
   }, []);
   return (
@@ -135,41 +126,58 @@ const Home = () => {
             {/* Notes Grid */}
             <main className="flex flex-col gap-8 overflow-y-auto p-6">
               <div
-                className={`${colours}  shadow-md rounded-md p-3 w-[800px] mx-auto flex  justify-between gap-10`}
+                style={{ backgroundColor: colours }}
+                className={`bg[${colours}] shadow-md rounded-md p-3 w-[800px] mx-auto flex  justify-between gap-10`}
               >
                 <div className="w-[87%] p-2">
                   <input
+                    onChange={(e) => setTitle(e.target.value)}
                     className="font-semibold outline-none text-gray-800 font-mono text-xl p-2 rounded-lg w-[100%] shadow-md shadow-gray-700"
                     placeholder="Name...."
                     type="text"
                   />
                   <textarea
-                    className="mt-3 font-semibold outline-none text-gray-800 font-mono text-xl p-2 rounded-lg w-[100%] shadow-md shadow-gray-700"
+                    onChange={(e) => setTextArea(e.target.value)}
+                    className={`${
+                      title ? " block" : "hidden"
+                    } mt-3 font-semibold outline-none text-gray-800 font-mono text-xl p-2 rounded-lg w-[100%] shadow-md shadow-gray-700`}
                     placeholder="your note..."
                     name="text"
                     id="text"
                   ></textarea>
                   <div className="mt-5 flex items-center gap-3">
                     <button
-                      onClick={() => changeColor("bg-pink-400")}
-                      className="shadow-md shadow-amber-950 size-10 bg-pink-400 rounded-full"
+                      onClick={() => changeColor("#FFC0CB")}
+                      className="shadow-md shadow-amber-950 size-10 bg-[#FFC0CB] rounded-full"
                     ></button>
                     <button
-                      onClick={() => changeColor("bg-blue-500")}
-                      className="shadow-md shadow-amber-950 size-10 bg-blue-500 rounded-full"
+                      onClick={() => changeColor("#59bae0")}
+                      className="shadow-md shadow-amber-950 size-10 bg-[#59bae0] rounded-full"
                     ></button>
                     <button
-                      onClick={() => changeColor("bg-yellow-400")}
-                      className="shadow-md shadow-amber-950 size-10 bg-yellow-400 rounded-full"
+                      onClick={() => changeColor("#9ACD32")}
+                      className="shadow-md shadow-amber-950 size-10 bg-[#9ACD32] rounded-full"
                     ></button>
                     <button
-                      onClick={() => changeColor("bg-green-500")}
-                      className="shadow-md shadow-amber-950 size-10 bg-green-500 rounded-full"
+                      onClick={() => changeColor("#eea8a7")}
+                      className="shadow-md shadow-amber-950 size-10 bg-[#eea8a7] rounded-full"
                     ></button>
+                    <label
+                      className="text-[46px] text-emerald-700 cursor-pointer"
+                      htmlFor="color"
+                    >
+                      <IoIosColorPalette />
+                    </label>
+                    <input
+                      onChange={(e) => setColours(e.target.value)}
+                      id="color"
+                      className="hidden"
+                      type="color"
+                    ></input>
                   </div>
                 </div>
                 <button
-                  onClick={handleRemove}
+                  onClick={handleCreate}
                   className="cursor-pointer size-[50px] flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                 >
                   <FiPlus className="text-5xl" />
@@ -177,12 +185,13 @@ const Home = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {notes.map((note) => (
+                {allNotes.map((item) => (
                   <NoteCard
-                    key={note.id}
-                    title={note.title}
-                    content={note.content}
-                    color={note.color}
+                    handleDel={() => handleDel(item)}
+                    key={item.key}
+                    title={item.notes.noteTitle}
+                    content={item.notes.notedescription}
+                    color={item.notes.noteColour}
                   />
                 ))}
               </div>

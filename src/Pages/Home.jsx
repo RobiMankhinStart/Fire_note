@@ -60,14 +60,16 @@ const Home = () => {
 
   const handleDel = (user) => {
     set(push(ref(db, "removedNotes/")), {
-      title: user.notes.noteTitle,
-      content: user.notes.notedescription,
-      color: user.notes.noteColour,
+      noteTitle: user.notes.noteTitle,
+      notedescription: user.notes.notedescription,
+      noteColour: user.notes.noteColour,
+      noteUser: user.notes.noteUser, // include user for filtering
     });
     // ------------Remove
     remove(ref(db, "tasks/" + user.key));
   };
 
+  const [loading, setLoading] = useState(true);
   const [allNotes, setAllNotes] = useState([]);
   console.log("allNotes : ", allNotes);
   useEffect(() => {
@@ -81,10 +83,12 @@ const Home = () => {
         }
       });
 
-      console.log("Snapshot:", snapshot.val());
+      // console.log("Snapshot:", snapshot.val());
 
       setAllNotes(myArr);
+      setLoading(false);
     });
+    // return()=>MdUnsubscribe()
   }, []);
   return (
     <section className=" h-screen bg-gray-50">
@@ -184,16 +188,63 @@ const Home = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {allNotes.map((item) => (
-                  <NoteCard
-                    handleDel={() => handleDel(item)}
-                    key={item.key}
-                    title={item.notes.noteTitle}
-                    content={item.notes.notedescription}
-                    color={item.notes.noteColour}
-                  />
-                ))}
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                {loading ? (
+                  // Show placeholders matching number of notes
+                  Array.from({ length: allNotes.length || 6 }).map(
+                    (_, index) => (
+                      <div
+                        key={index}
+                        role="status"
+                        className="w-[300px] md:w-[360px] animate-pulse"
+                      >
+                        <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+                        <span className="sr-only">Loading...</span>
+                      </div>
+                    )
+                  )
+                ) : allNotes.length > 0 ? (
+                  allNotes.map((item) => (
+                    <NoteCard
+                      handleDel={() => handleDel(item)}
+                      key={item.key}
+                      title={item.notes.noteTitle}
+                      content={item.notes.notedescription}
+                      color={item.notes.noteColour}
+                    />
+                  ))
+                ) : (
+                  <p className="text-4xl text-center mt-20 w-full font-bold text-gray-500">
+                    No notes found
+                  </p>
+                )}
+
+                {/* { allNotes.length === 0 ? (
+                  <div role="status" class="max-w-sm animate-pulse">
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  allNotes.map((item) => (
+                    <NoteCard
+                      handleDel={() => handleDel(item)}
+                      key={item.key}
+                      title={item.notes.noteTitle}
+                      content={item.notes.notedescription}
+                      color={item.notes.noteColour}
+                    />
+                  ))
+                )} */}
               </div>
             </main>
           </div>

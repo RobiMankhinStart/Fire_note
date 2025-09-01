@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import LayoutOne from "./Layouts/LayoutOne";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
+import Trash from "./components/Trash";
 
 function App() {
   const myRouter = createBrowserRouter(
@@ -18,6 +19,7 @@ function App() {
       <Route>
         <Route path="/" element={<LayoutOne />}>
           <Route index element={<Home />} />
+          <Route path="/trash" element={<Trash />} />
         </Route>
         <Route path="/registration" element={<Registration />} />
         <Route path="/login" element={<Login />} />

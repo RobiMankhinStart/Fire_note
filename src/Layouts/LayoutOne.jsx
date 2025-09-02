@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
 import { useSelector } from "react-redux";
+import ResNavBar from "../components/ResNavBar";
 
 const LayoutOne = () => {
   const userData = useSelector((state) => state.first.value);
@@ -15,6 +16,7 @@ const LayoutOne = () => {
   return (
     <div>
       <Navbar />
+      <ResNavBar />
       <Outlet />
     </div>
   );

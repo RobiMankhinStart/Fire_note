@@ -1,7 +1,15 @@
 import React from "react";
 import { CiCircleRemove } from "react-icons/ci";
+import { FaRegEdit } from "react-icons/fa";
+import { FiDelete } from "react-icons/fi";
 
-const NoteCard = ({ handleDel, title, content, color = "#ffffff" }) => (
+const NoteCard = ({
+  HandleEdit,
+  handleDel,
+  title,
+  content,
+  color = "#ffffff",
+}) => (
   <div
     style={{ backgroundColor: color }}
     className={`bg[${color}] w-[300px] md:w-[360px] flex justify-between rounded-lg shadow-sm border  border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer`}
@@ -10,8 +18,13 @@ const NoteCard = ({ handleDel, title, content, color = "#ffffff" }) => (
       <h3 className="font-medium text-gray-800">{title}</h3>
       <p className="text-gray-600 mt-2 text-sm">{content}</p>
     </div>
-    <div onClick={handleDel}>
-      <CiCircleRemove className="text-4xl text-red-600 " />
+    <div className="flex flex-col items-center justify-center gap-3">
+      <div className="hover:scale-110 duration-200" onClick={HandleEdit}>
+        <FaRegEdit className="text-3xl text-gray-700 " />
+      </div>
+      <div className=" pr-1 hover:scale-110 duration-200" onClick={handleDel}>
+        <FiDelete className="text-3xl text-red-600 " />
+      </div>
     </div>
   </div>
 );

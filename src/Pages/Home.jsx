@@ -1,5 +1,4 @@
 import { FiPlus } from "react-icons/fi";
-
 import { useEffect, useState } from "react";
 import {
   getDatabase,
@@ -8,6 +7,7 @@ import {
   ref,
   remove,
   set,
+  update,
 } from "firebase/database";
 import { IoIosColorPalette } from "react-icons/io";
 import { useSelector } from "react-redux";
@@ -28,6 +28,7 @@ const Home = () => {
   const userDetails = useSelector((state) => state.first.value);
   // console.log(userDetails.uid);
 
+  // ...........create
   const handleCreate = () => {
     set(push(ref(db, "tasks/")), {
       noteTitle: title,
@@ -36,8 +37,11 @@ const Home = () => {
       noteUser: userDetails.uid,
     });
     console.log("note added");
+    setTitle("");
+    setTextArea("");
   };
 
+  // ------------Remove
   const handleDel = (user) => {
     set(push(ref(db, "removedNotes/")), {
       noteTitle: user.notes.noteTitle,
@@ -45,13 +49,36 @@ const Home = () => {
       noteColour: user.notes.noteColour,
       noteUser: user.notes.noteUser, // include user for filtering
     });
-    // ------------Remove
     remove(ref(db, "tasks/" + user.key));
+  };
+
+  //....EditData state.........
+  const [editData, setEditData] = useState("");
+  console.log(editData);
+  // ....editData .......
+  const HandleEdit = (data) => {
+    setEditData(data);
+    setTitle(data.notes.noteTitle);
+    setTextArea(data.notes.notedescription);
+    setColours(data.notes.noteColour);
+  };
+  const editDataButton = () => {
+    update(ref(db, "tasks/" + editData.key), {
+      noteTitle: title,
+      notedescription: textArea,
+      noteColour: colours,
+    });
+    setEditData("");
+    setTitle("");
+    setTextArea("");
+    setColours("");
   };
 
   const [loading, setLoading] = useState(true);
   const [allNotes, setAllNotes] = useState([]);
   console.log("allNotes : ", allNotes);
+
+  //.............. read
   useEffect(() => {
     console.log("User UID in effect:", userDetails?.uid);
     // const starCountRef = ref(db, "posts/");
@@ -64,31 +91,33 @@ const Home = () => {
       });
 
       // console.log("Snapshot:", snapshot.val());
-
       setAllNotes(myArr);
       setLoading(false);
     });
     // return()=>MdUnsubscribe()
   }, []);
+
   return (
     <section className="pt-24 h-screen bg-gray-50">
       <div className="container">
         <div className="homeDiv">
           <div className="items-center flex flex-col overflow-hidden">
-            {/* Notes Grid */}
             <main className="flex flex-col gap-8 overflow-y-auto p-6">
+              {/* Notes Head */}
               <div
                 style={{ backgroundColor: colours }}
                 className={`bg[${colours}] shadow-md rounded-lg p-4 w-[800px] mx-auto flex  justify-between gap-10`}
               >
                 <div className="w-[87%] p-2">
                   <input
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="font-semibold outline-none text-gray-800 font-mono text-xl p-2 rounded-lg w-[100%] shadow-md shadow-gray-700"
                     placeholder="Name...."
                     type="text"
                   />
                   <textarea
+                    value={textArea}
                     onChange={(e) => setTextArea(e.target.value)}
                     className={`${
                       title ? " block" : "hidden"
@@ -121,24 +150,41 @@ const Home = () => {
                       <IoIosColorPalette />
                     </label>
                     <input
-                      onChange={(e) => setColours(e.target.value)}
+                      onClick={(e) => setColours(e.target.value)}
                       id="color"
                       className="hidden"
                       type="color"
                     ></input>
                   </div>
                 </div>
-                <button
+                <div className="mt-3">
+                  {editData ? (
+                    <button
+                      onClick={editDataButton}
+                      className="cursor-pointer h-[40px] pb-[1px] w-[120px] text-xl font-semibold font-mono flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Edit Data
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCreate}
+                      className="cursor-pointer h-[40px] pb-[1px] w-[120px] text-xl font-semibold font-mono flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Add Data
+                    </button>
+                  )}
+                </div>
+                {/* <button
                   onClick={handleCreate}
-                  className="cursor-pointer size-[50px] flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors                  className="cursor-pointer text-5xl size-[50px] "
                 >
                   <FiPlus className="text-5xl" />
-                </button>
+                </button> */}
               </div>
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                 {loading ? (
-                  // Show placeholders matching number of notes
+                  // Showing placeholders matching number of notes
                   Array.from({ length: allNotes.length || 6 }).map(
                     (_, index) => (
                       <div
@@ -159,6 +205,7 @@ const Home = () => {
                 ) : allNotes.length > 0 ? (
                   allNotes.map((item) => (
                     <NoteCard
+                      HandleEdit={() => HandleEdit(item)}
                       handleDel={() => handleDel(item)}
                       key={item.key}
                       title={item.notes.noteTitle}
@@ -171,28 +218,6 @@ const Home = () => {
                     No notes found
                   </p>
                 )}
-
-                {/* { allNotes.length === 0 ? (
-                  <div role="status" class="max-w-sm animate-pulse">
-                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                ) : (
-                  allNotes.map((item) => (
-                    <NoteCard
-                      handleDel={() => handleDel(item)}
-                      key={item.key}
-                      title={item.notes.noteTitle}
-                      content={item.notes.notedescription}
-                      color={item.notes.noteColour}
-                    />
-                  ))
-                )} */}
               </div>
             </main>
           </div>

@@ -23,6 +23,9 @@ const SidebarItem = ({ icon, label, active = false }) => (
 
 const Trash = () => {
   const db = getDatabase();
+  const [loading, setLoading] = useState(true);
+  const [removedNotes, setRemovedNotes] = useState([]);
+  console.log("removedNotes : ", removedNotes);
   const userDetails = useSelector((state) => state.first.value);
   // console.log(userDetails.uid);
 
@@ -44,17 +47,16 @@ const Trash = () => {
   // ------------RemoveAll
 
   const handleDeleteAll = () => {
-    remove(ref(db, "removedNotes/"));
+    removedNotes.map((item) => {
+      remove(ref(db, "removedNotes/" + item.key));
+    });
   };
-
-  const [loading, setLoading] = useState(true);
-  const [removedNotes, setRemovedNotes] = useState([]);
-  console.log("removedNotes : ", removedNotes);
 
   useEffect(() => {
     onValue(ref(db, "removedNotes/"), (snapshot) => {
       let myArr = [];
       snapshot.forEach((item) => {
+        // console.log("item", item.val());
         if (item.val().noteUser == userDetails.uid) {
           myArr.push({ key: item.key, notes: item.val() });
         }
@@ -67,11 +69,14 @@ const Trash = () => {
     });
   }, []);
   return (
-    <section className="pt-32 h-screen bg-gray-50">
+    <section className="pt-28 h-screen bg-gray-50">
       <div className="container">
         <div className="trashDiv flex flex-col gap-8">
           <div className=" flex justify-center shadow-md rounded-lg p-2">
-            <button class="inline-flex text-xl font-semibold font-mono items-center px-4 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white  rounded-md hover:-translate-y-1 hover:scale-110">
+            <button
+              onClick={handleDeleteAll}
+              class="inline-flex text-xl font-semibold font-mono items-center px-4 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white  rounded-md hover:-translate-y-1 hover:scale-110"
+            >
               <svg
                 stroke="currentColor"
                 viewBox="0 0 24 24"

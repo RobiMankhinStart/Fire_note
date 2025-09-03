@@ -1,4 +1,3 @@
-import { FiPlus } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import {
   getDatabase,
@@ -19,8 +18,6 @@ const Home = () => {
   console.log(colours);
   const [title, setTitle] = useState("");
   const [textArea, setTextArea] = useState("");
-  // const [inputcolour, setInputColour] = useState("white");
-  // console.log(inputcolour);
   const changeColor = (col) => {
     setColours(col);
   };
@@ -129,28 +126,29 @@ const Home = () => {
                   <div className="mt-5 flex items-center gap-3">
                     <button
                       onClick={() => changeColor("#FFC0CB")}
-                      className="shadow-md shadow-amber-950 size-10 bg-[#FFC0CB] rounded-full"
+                      className="shadow-md shadow-amber-950 size-10 bg-[#f3e4e7] rounded-full"
                     ></button>
                     <button
                       onClick={() => changeColor("#59bae0")}
-                      className="shadow-md shadow-amber-950 size-10 bg-[#59bae0] rounded-full"
+                      className="shadow-md shadow-amber-950 size-10 bg-[#4fc1ee] rounded-full"
                     ></button>
                     <button
                       onClick={() => changeColor("#9ACD32")}
-                      className="shadow-md shadow-amber-950 size-10 bg-[#9ACD32] rounded-full"
+                      className="shadow-md shadow-amber-950 size-10 bg-[#a8e232] rounded-full"
                     ></button>
                     <button
                       onClick={() => changeColor("#eea8a7")}
-                      className="shadow-md shadow-amber-950 size-10 bg-[#eea8a7] rounded-full"
+                      className="shadow-md shadow-amber-950 size-10 bg-[#fae0b8] rounded-full"
                     ></button>
                     <label
-                      className="text-[46px] text-emerald-700 cursor-pointer"
+                      className="text-[50px] pt-1 text-lime-700 cursor-pointer"
                       htmlFor="color"
                     >
                       <IoIosColorPalette />
                     </label>
                     <input
-                      onClick={(e) => setColours(e.target.value)}
+                      value={colours}
+                      onChange={(e) => setColours(e.target.value)}
                       id="color"
                       className="hidden"
                       type="color"
@@ -167,19 +165,18 @@ const Home = () => {
                     </button>
                   ) : (
                     <button
+                      disabled={!title.trim() || !textArea.trim()}
                       onClick={handleCreate}
-                      className="cursor-pointer h-[40px] pb-[1px] w-[120px] text-xl font-semibold font-mono flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                      className={` ${
+                        !title.trim() || !textArea.trim()
+                          ? "bg-gray-400 cursor-not-allowed" // disabled style
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } cursor-pointer h-[40px] pb-[1px] w-[120px] text-xl font-semibold font-mono flex items-center justify-center text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors`}
                     >
                       Add Data
                     </button>
                   )}
                 </div>
-                {/* <button
-                  onClick={handleCreate}
-flex items-center justify-center text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors                  className="cursor-pointer text-5xl size-[50px] "
-                >
-                  <FiPlus className="text-5xl" />
-                </button> */}
               </div>
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">

@@ -1,9 +1,11 @@
 import React from "react";
+import { BsPinAngle } from "react-icons/bs";
 import { CiCircleRemove } from "react-icons/ci";
 import { FaRegEdit } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 
 const NoteCard = ({
+  handlepin,
   HandleEdit,
   handleDel,
   title,
@@ -24,6 +26,9 @@ const NoteCard = ({
       </div>
       <div className=" pr-1 hover:scale-110 duration-200" onClick={handleDel}>
         <FiDelete className="text-3xl text-red-600 " />
+      </div>
+      <div className=" pr-1 hover:scale-110 duration-200" onClick={handlepin}>
+        <BsPinAngle className="text-3xl text-blue-700 " />
       </div>
     </div>
   </div>

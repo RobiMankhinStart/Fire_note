@@ -8,7 +8,7 @@ import {
   set,
 } from "firebase/database";
 import { useSelector } from "react-redux";
-import RemovedCard from "./RemovedCard";
+import RemovedCard from "../components/RemovedCard";
 
 const SidebarItem = ({ icon, label, active = false }) => (
   <div

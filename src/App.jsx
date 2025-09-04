@@ -11,7 +11,7 @@ import { ToastContainer } from "react-toastify";
 import LayoutOne from "./Layouts/LayoutOne";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
-import Trash from "./components/Trash";
+import Trash from "./Pages/Trash";
 
 function App() {
   const myRouter = createBrowserRouter(

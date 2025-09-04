@@ -11,6 +11,7 @@ import {
 import { IoIosColorPalette } from "react-icons/io";
 import { useSelector } from "react-redux";
 import NoteCard from "../components/NoteCard";
+import Pin from "../components/Pin";
 
 const Home = () => {
   const db = getDatabase();
@@ -49,18 +50,36 @@ const Home = () => {
     remove(ref(db, "tasks/" + user.key));
   };
 
+  // ------------Pinned
+  const handlepin = (user) => {
+    set(push(ref(db, "pinNotes/")), {
+      noteTitle: user.notes.noteTitle,
+      notedescription: user.notes.notedescription,
+      noteColour: user.notes.noteColour,
+      noteUser: user.notes.noteUser, // include user for filtering
+    });
+    remove(ref(db, "tasks/" + user.key));
+  };
+
   //....EditData state.........
   const [editData, setEditData] = useState("");
-  console.log(editData);
+  // console.log(editData);
   // ....editData .......
-  const HandleEdit = (data) => {
-    setEditData(data);
+  const HandleEdit = (data, source) => {
+    setEditData({ ...data, source });
     setTitle(data.notes.noteTitle);
     setTextArea(data.notes.notedescription);
     setColours(data.notes.noteColour);
   };
   const editDataButton = () => {
-    update(ref(db, "tasks/" + editData.key), {
+    if (!editData) return;
+    // update(ref(db,  "tasks/" + editData.key),
+    update(ref(db, `${editData.source}/${editData.key}`), {
+      noteTitle: title,
+      notedescription: textArea,
+      noteColour: colours,
+    });
+    update(ref(db, "pinNotes/" + editData.key), {
       noteTitle: title,
       notedescription: textArea,
       noteColour: colours,
@@ -103,7 +122,7 @@ const Home = () => {
               {/* Notes Head */}
               <div
                 style={{ backgroundColor: colours }}
-                className={`bg[${colours}] shadow-md rounded-lg p-4 w-[800px] mx-auto flex  justify-between gap-10`}
+                className={` shadow-md rounded-lg p-4 w-[800px] mx-auto flex  justify-between gap-10`}
               >
                 <div className="w-[87%] p-2">
                   <input
@@ -179,30 +198,37 @@ const Home = () => {
                 </div>
               </div>
 
+              {/* .......pinned ......... */}
+              <div className="w-[1200px] ">
+                <Pin HandleEdit={HandleEdit} />
+              </div>
+
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                 {loading ? (
                   // Showing placeholders matching number of notes
                   Array.from({ length: allNotes.length || 6 }).map(
-                    (_, index) => (
-                      <div
-                        key={index}
-                        role="status"
-                        className="w-[300px] md:w-[360px] animate-pulse"
-                      >
-                        <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
-                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
-                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
-                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
-                        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                    )
+                    (_, index) =>
+                      ~~(
+                        <div
+                          key={index}
+                          role="status"
+                          className="w-[300px] md:w-[360px] animate-pulse"
+                        >
+                          <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+                          <span className="sr-only">Loading...</span>
+                        </div>
+                      )
                   )
                 ) : allNotes.length > 0 ? (
                   allNotes.map((item) => (
                     <NoteCard
-                      HandleEdit={() => HandleEdit(item)}
+                      handlepin={() => handlepin(item)}
+                      HandleEdit={() => HandleEdit(item, "tasks")}
                       handleDel={() => handleDel(item)}
                       key={item.key}
                       title={item.notes.noteTitle}

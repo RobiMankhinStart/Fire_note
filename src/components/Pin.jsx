@@ -34,7 +34,7 @@ const Pin = ({ HandleEdit }) => {
       noteTitle: user.notes.noteTitle,
       notedescription: user.notes.notedescription,
       noteColour: user.notes.noteColour,
-      noteUser: user.notes.noteUser, // include user for filtering
+      noteUser: user.notes.noteUser,
     });
     remove(ref(db, "pinNotes/" + user.key));
   };
@@ -43,19 +43,11 @@ const Pin = ({ HandleEdit }) => {
       noteTitle: user.notes.noteTitle,
       notedescription: user.notes.notedescription,
       noteColour: user.notes.noteColour,
-      noteUser: user.notes.noteUser, // include user for filtering
+      noteUser: user.notes.noteUser,
     });
     remove(ref(db, "pinNotes/" + user.key));
   };
 
-  //   const [editData, setEditData] = useState("");
-
-  //   const HandleEdit = (data) => {
-  //     setEditData(data);
-  //     setTitle(data.notes.noteTitle);
-  //     setTextArea(data.notes.notedescription);
-  //     setColours(data.notes.noteColour);
-  //   };
   return (
     <div className="flex gap-3 flex-wrap">
       {pinnedNotes.map((item) => (

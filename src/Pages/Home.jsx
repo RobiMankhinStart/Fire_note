@@ -63,7 +63,7 @@ const Home = () => {
 
   //....EditData state.........
   const [editData, setEditData] = useState("");
-  // console.log(editData);
+  console.log(editData);
   // ....editData .......
   const HandleEdit = (data, source) => {
     setEditData({ ...data, source });

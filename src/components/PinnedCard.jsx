@@ -11,7 +11,6 @@ const PinnedCard = ({
   content,
   color = "#ffffff",
 }) => {
-  console.log("heello");
   return (
     <div
       style={{ backgroundColor: color }}

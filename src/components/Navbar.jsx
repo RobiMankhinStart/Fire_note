@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <section className="bg-white border-b border-gray-200 fixed left-0 right-0">
       <div className="container">
-        <navbar className="p-6 flex items-center justify-between">
+        <nav className="p-6 flex items-center justify-between">
           <h2 className="text-[32px] font-mono font-semibold text-gray-600">
             Noteit-Down
           </h2>
@@ -58,7 +58,7 @@ const Navbar = () => {
               <FiLogOut className="text-[20px] cursor-pointer" />
             </div>
           </div>
-        </navbar>
+        </nav>
       </div>
     </section>
   );

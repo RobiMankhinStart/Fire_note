@@ -7,7 +7,7 @@ import SidebarItem from "./SidebarItem";
 
 const ResNavBar = () => {
   return (
-    <navbar className="fixed top-26 lg:hidden block">
+    <nav className="fixed top-26 lg:hidden block">
       <div className="container">
         {/* Sidebar */}
         <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
@@ -40,7 +40,7 @@ const ResNavBar = () => {
           </div>
         </div>
       </div>
-    </navbar>
+    </nav>
   );
 };
 
